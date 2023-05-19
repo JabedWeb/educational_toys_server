@@ -72,13 +72,11 @@ async function run() {
     })
     
      //post data
-    app.post('/toys',async(req,res)=>{
+     app.post('/toys',async(req,res)=>{
       const newToy=req.body;
         const result= await educational_toys.insertOne(newToy);
         res.json(result);
     })
-
-
 
     // my toys delete
     app.delete('/toys/:id',async(req,res)=>{
