@@ -15,8 +15,8 @@ app.use(express.json());
 require('dotenv').config();
 
 //mongodb connection
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.lkb5wuy.mongodb.net/?retryWrites=true&w=majority`;
-
+//const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.lkb5wuy.mongodb.net/?retryWrites=true&w=majority`;
+const uri='mongodb://localhost:27017'
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -46,8 +46,17 @@ async function run() {
 
     //get all data
     app.get('/toys',async(req,res)=>{
-        const result= await educational_toys.find().toArray();
+
+      const limit=parseInt(req.query.limit);
+      if(limit && limit>0){
+        const result= await educational_toys.find({}).limit(limit).toArray();
         res.send(result);
+      }
+      else{
+        const result= await educational_toys.find({}).toArray();
+        res.send(result);
+      }
+     
     })
 
     //get single data
