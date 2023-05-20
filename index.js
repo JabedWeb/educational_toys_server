@@ -45,19 +45,57 @@ async function run() {
     const educational_toys=client.db("educational_toys").collection("toys");
 
     //get all data
-    app.get('/toys',async(req,res)=>{
 
-      const limit=parseInt(req.query.limit);
-      if(limit && limit>0){
-        const result= await educational_toys.find({}).limit(limit).toArray();
-        res.send(result);
+
+    // app.get('/toys', async (req, res) => {
+    //   const limit = parseInt(req.query.limit);
+    //   const sortField = req.query.sort ;
+    //   console.log("sortField",sortField);
+    //   const sortOrder = req.query.order === 'desc' ? -1 : 1;
+
+    //   const searchQuery = req.query.search;
+    //   console.log(searchQuery);
+    
+    //   let query = educational_toys.find();
+
+    //   if (searchQuery) {
+    //     const search = educational_toys.find({name: "Solar System Model"}).toArray();
+    //     console.log("search",search);
+    //   }
+    
+    //   if (limit && limit > 0) {
+    //     query = query.limit(limit);
+    //   }
+    
+    //   const result = await query.sort({ [sortField]: sortOrder }).toArray();
+    //   res.send(result);
+    // });
+
+    app.get('/toys', async (req, res) => {
+      const limit = parseInt(req.query.limit);
+      const sortField = req.query.sort;
+      console.log("sortField", sortField);
+      const sortOrder = req.query.order === 'desc' ? -1 : 1;
+    
+      const searchQuery = req.query.search;
+      console.log(searchQuery);
+    
+      let query = educational_toys.find();
+    
+      if (searchQuery) {
+        query = educational_toys.find({ name: { $regex: searchQuery, $options: 'i' } });
       }
-      else{
-        const result= await educational_toys.find({}).toArray();
-        res.send(result);
+    
+      if (limit && limit > 0) {
+        query = query.limit(limit);
       }
-     
-    })
+    
+      const result = await query.sort({ [sortField]: sortOrder }).toArray();
+      console.log("result",result);
+      res.send(result);
+    });
+    
+    
 
     //get single data
     app.get('/toys/:id',async(req,res)=>{
