@@ -46,36 +46,15 @@ async function run() {
 
     //get all data
 
-
-    // app.get('/toys', async (req, res) => {
-    //   const limit = parseInt(req.query.limit);
-    //   const sortField = req.query.sort ;
-    //   console.log("sortField",sortField);
-    //   const sortOrder = req.query.order === 'desc' ? -1 : 1;
-
-    //   const searchQuery = req.query.search;
-    //   console.log(searchQuery);
-    
-    //   let query = educational_toys.find();
-
-    //   if (searchQuery) {
-    //     const search = educational_toys.find({name: "Solar System Model"}).toArray();
-    //     console.log("search",search);
-    //   }
-    
-    //   if (limit && limit > 0) {
-    //     query = query.limit(limit);
-    //   }
-    
-    //   const result = await query.sort({ [sortField]: sortOrder }).toArray();
-    //   res.send(result);
-    // });
-
     app.get('/toys', async (req, res) => {
       const limit = parseInt(req.query.limit);
       const sortField = req.query.sort;
       console.log("sortField", sortField);
-      const sortOrder = req.query.order === 'desc' ? -1 : 1;
+      console.log("limit",limit);
+
+      let sortOrder = req.query.order === 'asc' ? 1 : -1;
+ 
+      console.log("setorder",sortOrder);
     
       const searchQuery = req.query.search;
       console.log(searchQuery);
@@ -84,14 +63,15 @@ async function run() {
     
       if (searchQuery) {
         query = educational_toys.find({ name: { $regex: searchQuery, $options: 'i' } });
+        console.log("query1");
       }
     
       if (limit && limit > 0) {
         query = query.limit(limit);
+        console.log("query2");
       }
     
       const result = await query.sort({ [sortField]: sortOrder }).toArray();
-      console.log("result",result);
       res.send(result);
     });
     
