@@ -15,8 +15,8 @@ app.use(express.json());
 require('dotenv').config();
 
 //mongodb connection
-//const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.lkb5wuy.mongodb.net/?retryWrites=true&w=majority`;
-const uri='mongodb://localhost:27017'
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.lkb5wuy.mongodb.net/?retryWrites=true&w=majority`;
+ //const uri='mongodb://localhost:27017'
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -49,38 +49,30 @@ async function run() {
     app.get('/toys', async (req, res) => {
       const limit = parseInt(req.query.limit);
       const sortField = req.query.sort;
-      console.log("sortField", sortField);
-      console.log("limit",limit);
 
       let sortOrder = req.query.order === 'asc' ? 1 : -1;
- 
-      console.log("setorder",sortOrder);
+
     
       const searchQuery = req.query.search;
-      console.log(searchQuery);
+
     
       let query = educational_toys.find();
     
       if (searchQuery) {
         query = educational_toys.find({ name: { $regex: searchQuery, $options: 'i' } });
-        console.log("query1");
       }
     
       if (limit && limit > 0) {
         query = query.limit(limit);
-        console.log("query2");
       }
     
       const result = await query.sort({ [sortField]: sortOrder }).toArray();
       res.send(result);
     });
-    
-    
 
     //get single data
     app.get('/toys/:id',async(req,res)=>{
         const id=req.params.id;
-        console.log(id);
         const ids =new ObjectId(id);
         const result= await educational_toys.findOne({_id:ids});
         res.send(result);
@@ -89,8 +81,6 @@ async function run() {
     // show user toys
     app.get('/mytoys', async(req,res)=>{
       let query={};
-      console.log(req.query);
-      console.log(req.query.email);
       if(req.query.email){
         query={sellerEmail:req.query.email}
       }
